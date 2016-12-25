@@ -1,7 +1,5 @@
 from jsonschema import validate
-import multiprocessing as mp
 import praw
-from itertools import repeat
 from flask import Flask, request
 import json
 import os
@@ -60,11 +58,8 @@ def _message(user, message, subject, reddit):
 
 
 def message_user(reddit, message, subject, users):
-    pool = mp.Pool(mp.cpu_count())
-    return pool.starmap(_message,
-            zip(users[:10], repeat(message),
-            repeat(subject),
-            repeat(reddit)))
+    for u in users[:10]:
+        _message(u, message, subject, reddit)
 
 
 @app.route('/', methods=['OPTIONS', 'POST'])
@@ -87,7 +82,6 @@ def handler():
                 reddit.auth.authorize(payload['code'])
             except:
                 return json.dumps({"authorization": "invalid"})
-            print('about to run')
             successes = message_user(reddit, payload['message'], payload['subject'], payload['users'])
         return json.dumps(successes)
     else:
