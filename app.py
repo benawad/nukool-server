@@ -58,9 +58,10 @@ def _message(user, message, subject, reddit):
 
 
 def message_user(reddit, message, subject, users):
+    result = []
     for u in users[:10]:
-        _message(u, message, subject, reddit)
-
+        result.append(_message(u, message, subject, reddit))
+    return result
 
 @app.route('/', methods=['OPTIONS', 'POST'])
 def handler():
