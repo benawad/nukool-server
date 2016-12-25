@@ -87,6 +87,7 @@ def handler():
                 reddit.auth.authorize(payload['code'])
             except:
                 return json.dumps({"authorization": "invalid"})
+            print('about to run')
             successes = message_user(reddit, payload['message'], payload['subject'], payload['users'])
         return json.dumps(successes)
     else:
