@@ -1,0 +1,4 @@
+praw
+flask
+jsonschema
+gunicorn
