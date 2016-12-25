@@ -2,3 +2,4 @@ praw
 flask
 jsonschema
 gunicorn
+gevent
