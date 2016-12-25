@@ -3,6 +3,7 @@ import praw
 from flask import Flask, request
 import json
 import os
+from crossdomain import crossdomain
 
 client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
@@ -64,9 +65,9 @@ def message_user(reddit, message, subject, users):
     return result
 
 @app.route('/', methods=['OPTIONS', 'POST'])
+@crossdomain(origin='*')
 def handler():
     if request.method == 'POST':
-        print(request.headers)
         try:
             payload = request.get_json()
             validate(payload, schema)
