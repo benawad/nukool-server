@@ -49,6 +49,11 @@ schema = {
 ######### CELERY ###########
 redis_url = os.environ['REDIS_URL']
 celery = Celery(app.import_name, broker=redis_url)
+celery.conf.update(
+    CELERY_ACCEPT_CONTENT=['pickle'],
+    CELERY_TASK_SERIALIZER='pickle',
+    CELERY_RESULT_SERIALIZER='pickle'
+)
 
 
 @celery.task(serializer='pickle')
