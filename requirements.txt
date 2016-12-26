@@ -4,3 +4,5 @@ jsonschema
 gunicorn
 gevent
 flask-cors
+celery
+redis
