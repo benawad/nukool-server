@@ -51,7 +51,7 @@ redis_url = os.environ['REDIS_URL']
 celery = Celery(app.import_name, broker=redis_url)
 
 
-@celery.task
+@celery.task(serializer='pickle')
 def _message(user, message, subject, reddit):
     ruser = reddit.redditor(user)
     try:
