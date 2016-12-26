@@ -3,3 +3,4 @@ flask
 jsonschema
 gunicorn
 gevent
+flask-cors

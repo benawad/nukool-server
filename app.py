@@ -3,13 +3,15 @@ import praw
 from flask import Flask, request
 import json
 import os
-from crossdomain import crossdomain
+from flask_cors import CORS, cross_origin
 
 client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
 redirect_uri = os.environ['REDIRECT_URI']
 
 app = Flask(__name__)
+app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app, resources={r'/': {"origins": "benawad"}})
 
 schema = {
     "type": "object",
@@ -65,7 +67,7 @@ def message_user(reddit, message, subject, users):
     return result
 
 @app.route('/', methods=['OPTIONS', 'POST'])
-@crossdomain(origin='*')
+@cross_origin(origin='benawad')
 def handler():
     if request.method == 'POST':
         try:
