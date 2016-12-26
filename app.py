@@ -48,8 +48,7 @@ schema = {
 
 ######### CELERY ###########
 redis_url = os.environ['REDIS_URL']
-
-celery = Celery('tasks', broker=redis_url)
+celery = Celery(app.import_name, broker=redis_url)
 
 
 @celery.task
