@@ -4,6 +4,7 @@ from flask import Flask, request
 import json
 import os
 from flask_cors import CORS, cross_origin
+from celery import Celery, group
 
 client_id = os.environ['CLIENT_ID']
 client_secret = os.environ['CLIENT_SECRET']
@@ -45,26 +46,34 @@ schema = {
 }
 
 
-def forbidden():
-    print('forbidden')
-    return json.dumps({"error": "forbidden"})
+######### CELERY ###########
+redis_url = os.environ['REDIS_URL']
+
+celery = Celery('tasks', broker=redis_url)
 
 
+@celery.task
 def _message(user, message, subject, reddit):
     ruser = reddit.redditor(user)
     try:
         ruser.message(subject, message)
-        success = True
     except:
-        success = False
-    return [user, success]
+        # future todo: message user that this message failed
+        pass
 
 
 def message_user(reddit, message, subject, users):
-    result = []
-    for u in users[:10]:
-        result.append(_message(u, message, subject, reddit))
-    return result
+    g = group(_message.s(u, message, subject, reddit) for u in users)
+    g.apply_async()
+
+
+######### END CELERY ###########
+
+ 
+def forbidden():
+    print('forbidden')
+    return json.dumps({"error": "forbidden"})
+
 
 @app.route('/', methods=['OPTIONS', 'POST'])
 @cross_origin(origin='benawad')
@@ -86,8 +95,8 @@ def handler():
                 reddit.auth.authorize(payload['code'])
             except:
                 return json.dumps({"authorization": "invalid"})
-            successes = message_user(reddit, payload['message'], payload['subject'], payload['users'])
-        return json.dumps(successes)
+            message_user(reddit, payload['message'], payload['subject'], payload['users'])
+        return json.dumps([])
     else:
         return 'hi'
 
