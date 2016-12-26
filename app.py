@@ -72,7 +72,6 @@ def handler():
     if request.method == 'POST':
         try:
             payload = request.get_json()
-            print(payload)
             validate(payload, schema)
         except:
             return forbidden()
