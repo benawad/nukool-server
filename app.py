@@ -82,6 +82,7 @@ def forbidden():
 @app.route('/', methods=['OPTIONS', 'POST'])
 @cross_origin(origin='benawad')
 def handler():
+    print(request.header)
     if request.method == 'POST':
         try:
             payload = request.get_json()
