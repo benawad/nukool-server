@@ -82,28 +82,30 @@ def forbidden():
 @app.route('/', methods=['OPTIONS', 'POST'])
 @cross_origin(origin='benawad')
 def handler():
-    print(request.headers)
-    if request.method == 'POST':
-        try:
-            payload = request.get_json()
-            validate(payload, schema)
-        except:
-            return forbidden()
-        if payload['key'] != 'yummy ramen':
-            return forbidden()
-        else:
-            reddit = praw.Reddit(client_id=client_id,
-                    client_secret=client_secret,
-                    redirect_uri=redirect_uri,
-                    user_agent="flask server")
+    if request.headers.get('Origin', 'unknown') == 'http://benawad.com':
+        if request.method == 'POST':
             try:
-                reddit.auth.authorize(payload['code'])
+                payload = request.get_json()
+                validate(payload, schema)
             except:
-                return json.dumps({"authorization": "invalid"})
-            message_user(reddit, payload['message'], payload['subject'], payload['users'])
-        return json.dumps([])
+                return forbidden()
+            if payload['key'] != 'yummy ramen':
+                return forbidden()
+            else:
+                reddit = praw.Reddit(client_id=client_id,
+                        client_secret=client_secret,
+                        redirect_uri=redirect_uri,
+                        user_agent="flask server")
+                try:
+                    reddit.auth.authorize(payload['code'])
+                except:
+                    return json.dumps({"authorization": "invalid"})
+                message_user(reddit, payload['message'], payload['subject'], payload['users'])
+            return json.dumps([])
+        else:
+            return 'hi'
     else:
-        return 'hi'
+        return forbidden()
 
 
 if __name__ == "__main__":
