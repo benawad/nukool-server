@@ -62,8 +62,7 @@ def _message(user, message, subject, reddit):
     try:
         ruser.message(subject, message)
     except:
-        # future todo: message user that this message failed
-        pass
+        reddit.me().message('Failed to send message to {}'.format(ruser.name), 'User does exist')
 
 
 def message_user(reddit, message, subject, users):
@@ -101,7 +100,7 @@ def handler():
                 except:
                     return json.dumps({"authorization": "invalid"})
                 message_user(reddit, payload['message'], payload['subject'], payload['users'])
-            return json.dumps([])
+            return json.dumps({"authorization": "successful"})
         else:
             return 'hi'
     else:
