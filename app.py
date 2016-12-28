@@ -99,7 +99,7 @@ def handler():
                     reddit.auth.authorize(payload['code'])
                 except:
                     return json.dumps({"authorization": "invalid"})
-                message_user(reddit, payload['message'], payload['subject'], payload['users'])
+                message_user(reddit, payload['message'], payload['subject'], payload['users'][:10])
             return json.dumps({"authorization": "successful"})
         else:
             return 'hi'
