@@ -62,7 +62,7 @@ def _message(user, message, subject, reddit):
     try:
         ruser.message(subject, message)
     except:
-        reddit.me().message('Failed to send message to {}'.format(ruser.name), 'User does exist')
+        reddit.user.me().message('Failed to send message to {}'.format(ruser.name), 'User does exist')
 
 
 def message_user(reddit, message, subject, users):
