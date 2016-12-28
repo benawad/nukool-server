@@ -62,7 +62,7 @@ def _message(user, message, subject, reddit):
     try:
         ruser.message(subject, message)
     except:
-        reddit.user.me().message('Failed to send message to {}'.format(ruser.name), 'User does exist')
+        reddit.user.me().message('Failed to send message using Nukool', 'http://benawad.com/nukool tried to send your message to {} but that user does not exist'.format(ruser.name))
 
 
 def message_user(reddit, message, subject, users):
